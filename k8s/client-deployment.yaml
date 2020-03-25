@@ -1,19 +1,33 @@
+# Deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-	name: client-deployment
+  name: client-deployment
 spec:
-	replicas: 3
-	selector:
-		matchLabels:
-			component: web
-	template:
-		metadata:
-			label:
-				component: web
-		spec:
-			containers:
-				- name: client
-					image: lukeschuyler/multi-client
-					ports:
-						- containerPort: 3000
+  replicas: 3
+  selector:
+    matchLabels:
+      component: web
+  template:
+    metadata:
+      labels:
+        component: web
+    spec:
+      containers:
+        - name: client
+          image: lukeschuyler/multi-client
+          ports:
+            - containerPort: 3000
+---
+# Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: client-cluster-ip-service
+spec:
+  type: ClusterIP
+  selector:
+    component: web
+  ports:
+    - port: 3000
+      targetPort: 3000
